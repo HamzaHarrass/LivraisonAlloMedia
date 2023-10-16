@@ -2,6 +2,20 @@
   "dependencies": {
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^7.6.2"
-  }
+    "mongoose": "^7.6.2",
+    "nodemon": "^3.0.1"
+  },
+  "name": "livraisonallomedia",
+  "description": "",
+  "version": "1.0.0",
+  "main": "app.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev" : "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC"
 }
