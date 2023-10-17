@@ -62,6 +62,10 @@ const LoginUser = async (req, res) => {
             'your-secret-key', 
             { expiresIn: '1h' } 
         );
+
+        res.cookie("toKen", token,{
+            httpOnly : true,
+        })
             
         res.status(200).json({ token });
     } catch (error) {
