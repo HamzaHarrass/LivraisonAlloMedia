@@ -1,12 +1,14 @@
 const User = require('../models/Users'); 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const nodemailer = require('nodemailer');
+const { transporter, sendEmail } = require('../config/nodeMailerConfig');
+const Role = require('../models/Roles');
 
 const CreateUser = async (req, res) => {
     try {
       
-        const { username, email, password , role } = req.body;
+        let { username, email, password , role } = req.body;
 
         if (!username || !password || !email || !role) {
             return res.status(400).send("Veuillez remplir tous les champs.");
@@ -20,7 +22,7 @@ const CreateUser = async (req, res) => {
         if (!role == "client" && "livreur"){
             return res.status(403).json({ message: 'invalid role' });
         }
-        
+        role = Role.findOne({name:role})
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -29,12 +31,30 @@ const CreateUser = async (req, res) => {
             username,
             email,
             password: hashedPassword,
+            role : role._id
         });
 
+        const token = jwt.sign({email: newUser.email },
+                    'your-secret-key', 
+                    { expiresIn: 600 } 
+                );
        
+        newUser.verificationToken = token;
+
+
         await newUser.save();
 
-        res.status(201).json({ message: 'User created successfully' });
+      
+        
+        const mailOptions = {
+            from:"allo media <"+ process.env.MAIL_USERNAME+">",
+            to: newUser.email,
+            subject: 'Account Verification',
+            html: `<p>Click <a href="http://localhost:3000/auth/verify?token=${token}">here</a> to verify your account.</p>`,
+        };
+        
+        sendEmail(mailOptions);
+        res.status(201).json({message:"user enregistred, check your email for configuration"})
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -60,7 +80,7 @@ const LoginUser = async (req, res) => {
         const token = jwt.sign(
             { userId: user._id, email: user.email },
             'your-secret-key', 
-            { expiresIn: '1h' } 
+            { expiresIn: '48h' } 
         );
 
         res.cookie("toKen", token,{
