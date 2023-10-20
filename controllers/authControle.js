@@ -5,6 +5,8 @@ const nodemailer = require('nodemailer');
 const { transporter, sendEmail } = require('../config/nodeMailerConfig');
 const Role = require('../models/Roles');
 
+// fonction register
+
 const CreateUser = async (req, res) => {
     try {
       
@@ -35,7 +37,7 @@ const CreateUser = async (req, res) => {
         });
 
         const token = jwt.sign({email: newUser.email },
-                    'your-secret-key', 
+                    'AZERTYUIO123456789', 
                     { expiresIn: 600 } 
                 );
        
@@ -61,6 +63,10 @@ const CreateUser = async (req, res) => {
     }
 };
 
+
+
+// function login
+
 const LoginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -79,8 +85,8 @@ const LoginUser = async (req, res) => {
 
         const token = jwt.sign(
             { userId: user._id, email: user.email },
-            'your-secret-key', 
-            { expiresIn: '48h' } 
+            'AZERTYUIO123456789', 
+            { expiresIn: 150 } 
         );
 
         res.cookie("toKen", token,{
@@ -94,5 +100,39 @@ const LoginUser = async (req, res) => {
     }
 };
 
+// function forget password
 
-module.exports = { CreateUser , LoginUser };
+const ForgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: 'Please provide your email address' });
+        }
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const token = jwt.sign({ email: user.email }, 'AZERTYUIO123456789', { expiresIn: '1h' });
+
+        const mailOptions = {
+            from: 'allo media <' + process.env.MAIL_USERNAME + '>',
+            to: user.email,
+            subject: 'Password Reset',
+            html: `<p>Click <a href="http://localhost:3000/auth/reset-password?token=${token}">here</a> to reset your password.</p>`,
+        };
+
+        sendEmail(mailOptions);
+        res.status(200).json({ message: 'Password reset link sent to your email' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+  
+
+module.exports = { CreateUser , LoginUser , ForgotPassword};
