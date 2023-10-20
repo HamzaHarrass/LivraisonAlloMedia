@@ -11,9 +11,11 @@ Avant de commencer, assurez-vous d'avoir installé les éléments suivants sur v
 
 ## Cloner le Dépôt
 
+Pour cloner le dépôt AlloMedia, suivez les étapes ci-dessous :
+
 1. Ouvrez votre terminal ou votre invite de commande.
 
-2. Accédez au répertoire où vous souhaitez cloner le dépôt AlloMedia Express en utilisant la commande cd. Par exemple, pour le cloner dans votre répertoire personnel, vous pouvez utiliser :
+2. Clonez le dépôt en utilisant la commande suivante :
 
 ```bash
-cd ~/https://github.com/HamzaHarrass/LivraisonAlloMedia
+git clone https://github.com/medabra/AlloMedia.git
