@@ -19,3 +19,8 @@ Pour cloner le dépôt AlloMedia, suivez les étapes ci-dessous :
 
 ```bash
 git clone https://github.com/medabra/AlloMedia.git
+```
+1 .Accédez au projet en utilisant la commande suivante :
+```
+cd alloMedia
+```
