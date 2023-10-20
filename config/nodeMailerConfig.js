@@ -13,11 +13,11 @@ const transporter = nodemailer.createTransport({
 
   const sendEmail = async function(messageOptions){
     transporter.sendMail(messageOptions, (error, info) => {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent successfully!');
-        }
+        // if (error) {
+        //   console.log(error);
+        // } else {
+        //   console.log('Email sent successfully!');
+        // }
       });
 }
 module.exports = {
