@@ -16,4 +16,4 @@ Avant de commencer, assurez-vous d'avoir installé les éléments suivants sur v
 2. Accédez au répertoire où vous souhaitez cloner le dépôt AlloMedia Express en utilisant la commande cd. Par exemple, pour le cloner dans votre répertoire personnel, vous pouvez utiliser :
 
 ```bash
-cd ~/votre_répertoire
+cd ~/[votre_répertoire](https://github.com/HamzaHarrass/LivraisonAlloMedia)https://github.com/HamzaHarrass/LivraisonAlloMedia
