@@ -42,4 +42,3 @@ C'est tout ! Vous avez cloné avec succès le dépôt AlloMedia Express, install
 ```
 Assurez-vous de personnaliser les liens vers les installations de Git et Node.js, ainsi que toute autre information spécifique à votre projet, avant d'ajouter ce fichier README.md à la racine de votre référentiel GitHub.
 ```
-##H.Hamza
