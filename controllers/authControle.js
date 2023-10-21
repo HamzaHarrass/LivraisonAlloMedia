@@ -7,7 +7,7 @@ const Role = require('../models/Roles');
 
 // fonction register
 
-const CreateUser = async (req, res) => {
+const register = async (req, res) => {
     try {
       
         let { username, email, password , role } = req.body;
@@ -58,8 +58,8 @@ const CreateUser = async (req, res) => {
         sendEmail(mailOptions);
         res.status(201).json({message:"user enregistred, check your email for configuration"})
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        // console.error(error);
+        // res.status(500).json({ message: 'Internal server error' });
     }
 };
 
@@ -135,4 +135,4 @@ const ForgotPassword = async (req, res) => {
 
   
 
-module.exports = { CreateUser , LoginUser , ForgotPassword};
+module.exports = { register , LoginUser , ForgotPassword};

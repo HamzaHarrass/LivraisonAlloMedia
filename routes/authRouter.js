@@ -1,12 +1,12 @@
 const express = require('express');
-const { CreateUser , LoginUser , ForgotPassword } = require('../controllers/authControle');
+const { register , LoginUser , ForgotPassword } = require('../controllers/authControle');
 const  ResetPassword  = require('../middleware/authMiddleware');
 const User = require('../models/Users');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
-router.post('/register',CreateUser);
+router.post('/register',register);
 router.post('/login',LoginUser);
 router.get('/verify',(req,res)=>{
     const token = req.query.token;
