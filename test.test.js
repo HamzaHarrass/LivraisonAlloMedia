@@ -1,4 +1,4 @@
-const { register } = require('./controllers/authControle'); // Make sure the import is correct
+const { register } = require('./controllers/authControle'); 
 const User = require('./models/Users');
 const Role = require('./models/Roles');
 
@@ -27,9 +27,9 @@ describe('register', () => {
     it('should return a user exists error', async () => {
       const req = {
         body: {
-          username: 'existinguser',
-          email: 'existinguser@example.com',
-          password: 'testpassword',
+          username: 'user',
+          email: 'user@gmail.com',
+          password: 'test',
           role: 'client',
         },
       };
@@ -40,7 +40,7 @@ describe('register', () => {
         json: jest.fn(),
       };
   
-      User.findOne = jest.fn().mockResolvedValue({}); // Simulate an existing user
+      User.findOne = jest.fn().mockResolvedValue({}); 
   
       await register(req, res);
   
@@ -64,11 +64,8 @@ describe('register', () => {
             json: jest.fn(),
         };
 
-        // Mock the User.findOne and Role.findOne functions
         User.findOne = jest.fn().mockResolvedValue(null);
         Role.findOne = jest.fn().mockResolvedValue({ name: 'client', _id: 'role_id' });
-
-        // Mock the User.prototype.save method
         User.prototype.save = jest.fn();
 
         await register(req, res);

@@ -18,7 +18,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --WatchAll",
     "dev": "nodemon app.js"
   },
   "author": "",
