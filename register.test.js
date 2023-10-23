@@ -1,135 +1,115 @@
-const { register } = require('./controllers/authControle'); 
-const { transporter, sendEmail } = require('./config/nodeMailerConfig');
-const User = require('./models/Users');
-const Role = require('./models/Roles');
+const { register } = require('./controllers/authControle');
+const User = require('./models/Users'); 
+const Role = require('./models/Roles'); 
+const bcryptjs = require('bcryptjs'); 
+const jwt = require('jsonwebtoken');
+const {sendEmail} = require('./config/nodeMailerConfig');
+
+jest.mock('./models/Users'); 
+jest.mock('./models/Roles'); 
+jest.mock('bcryptjs'); 
+jest.mock('jsonwebtoken'); 
+jest.mock('./config/nodeMailerConfig');
 
 describe('register', () => {
-    it('should return a validation error for missing fields', async () => {
-        const req = {
-            body: {
-                username: 'user',
-                email: 'user@gmail.com',
-                password: 'test',
-            },
-        };
+  it('should return a message that all fields are required', async () => {
+    const req = {
+      body: {
+        username: '',
+        email: 'test@example.com',
+        password: 'password123',
+        role: 'client',
+      },
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+      json: jest.fn(),
+    };
 
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            send: jest.fn(),
-            json: jest.fn(),
-        };
+    await register(req, res);
 
-        await register(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.send).toHaveBeenCalledWith("Veuillez remplir tous les champs.");
+  });
 
-        expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.send).toHaveBeenCalledWith('Veuillez remplir tous les champs.');
-    });
 
-    it('should return a user exists error', async () => {
-      const req = {
-        body: {
-          username: 'user',
-          email: 'user@gmail.com',
-          password: 'test',
-          role: 'client',
-        },
-      };
-  
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        send: jest.fn(),
-        json: jest.fn(),
-      };
-  
-      User.findOne = jest.fn().mockResolvedValue({}); 
-  
-      await register(req, res);
-  
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ message: 'User already exists' });
-    });
+  it('should return a user already exist', async () => {
+    const req = {
+      body: {
+        username: 'testuser',
+        email: 'test@example.com',
+        password: 'password123',
+        role: 'client',
+      },
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+      json: jest.fn(),
+    };
 
-    // it('should return an invalid role error', async () => {
-    //   const req = {
-    //     body: {
-    //       username: 'user',
-    //       email: 'user@gmail.com',
-    //       password: 'test',
-    //       role: 'invalidrole', 
-    //     },
-    //   };
-  
-    //   const res = {
-    //     status: jest.fn().mockReturnThis(),
-    //     send: jest.fn(),
-    //     json: jest.fn(),
-    //   };
-  
-    //   User.findOne = jest.fn().mockResolvedValue(null);
-    //   Role.findOne = jest.fn().mockResolvedValue(null); 
-  
-    //   await register(req, res);
-  
-    //   expect(res.status).toHaveBeenCalledWith(403);
-    //   expect(res.json).toHaveBeenCalledWith({ message: 'invalid role' });
-    // }, 90000);
+    User.findOne.mockResolvedValue({});
 
-    it('should handle email sending error', async () => {
-        const req = {
-          body: {
-            username: 'testuser',
-            email: 'testuser@example.com',
-            password: 'testpassword',
-            role: 'client',
-          },
-        };
-    
-        const res = {
-          status: jest.fn().mockReturnThis(),
-          send: jest.fn(),
-          json: jest.fn(),
-        };
-    
-        User.findOne = jest.fn().mockResolvedValue(null);
-        Role.findOne = jest.fn().mockResolvedValue({ name: 'client', _id: 'role_id' });
-        User.prototype.save = jest.fn();
-        const sendEmail = jest.fn(() => {
-          throw new Error('Email sending error');
-        });
-    
-        jest.mock('../config/nodeMailerConfig', () => ({ sendEmail }));
-    
-        await register(req, res);
-    
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ message: 'Email sending error' });
-      });
 
-    it('should create a new user', async () => {
-        const req = {
-            body: {
-                username: 'user',
-                email: 'user@gmail.com',
-                password: 'test',
-                role: 'client',
-            },
-        };
+    await register(req, res);
 
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            send: jest.fn(),
-            json: jest.fn(),
-        };
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ message: 'User already exists' });
+  });
+ 
+  it('should return a message invalid role', async () => {
+    const req = {
+      body: {
+        username: 'testuser',
+        email: 'test@example.com',
+        password: 'password123',
+        role: 'invalid role',
+      },
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+      json: jest.fn(),
+    };
 
-        User.findOne = jest.fn().mockResolvedValue(null);
-        Role.findOne = jest.fn().mockResolvedValue({ name: 'client', _id: 'role_id' });
-        User.prototype.save = jest.fn();
+    User.findOne.mockResolvedValue(null);
 
-        await register(req, res);
 
-        expect(res.status).toHaveBeenCalledWith(201);
-        expect(res.json).toHaveBeenCalledWith({ message: 'user enregistred, check your email for configuration' });
+    await register(req, res);
 
-        expect(User.prototype.save).toHaveBeenCalled();
-    });
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.json).toHaveBeenCalledWith({ message: 'invalid role' });
+  });
+
+
+  it('should return a success response when registering a new user', async () => {
+    const req = {
+      body: {
+        username: 'testuser',
+        email: 'test@example.com',
+        password: 'password123',
+        role: 'client',
+      },
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+      json: jest.fn(),
+    };
+
+    User.findOne.mockResolvedValue(null);
+
+    bcryptjs.hash.mockResolvedValue('hashedPassword');
+
+    Role.findOne.mockResolvedValue({ _id: 'roleId' });
+
+    jwt.sign.mockReturnValue('token');
+
+    await register(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({ message: 'user enregistred, check your email for configuration' });
+  });
+
 });
