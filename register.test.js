@@ -12,6 +12,7 @@ jest.mock('jsonwebtoken');
 jest.mock('./config/nodeMailerConfig');
 
 describe('register', () => {
+  
   it('should return a message that all fields are required', async () => {
     const req = {
       body: {

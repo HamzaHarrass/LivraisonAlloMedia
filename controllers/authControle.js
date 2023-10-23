@@ -23,7 +23,6 @@ const register = async (req, res) => {
         }
 
         if (role != "client" && "livreur"){
-            console.log("i am in invalid role");
             return res.status(403).json({ message: 'invalid role' });
         }
         role = Role.findOne({name:role})
