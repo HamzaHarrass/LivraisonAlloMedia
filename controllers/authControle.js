@@ -22,7 +22,8 @@ const register = async (req, res) => {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        if (role != "client" && "livreur"){
+        if (role != "client" && role != "livreur"){
+            console.log(role);
             return res.status(403).json({ message: 'invalid role' });
         }
         role = Role.findOne({name:role})
@@ -53,7 +54,14 @@ const register = async (req, res) => {
             from:"allo media <"+ process.env.MAIL_USERNAME+">",
             to: newUser.email,
             subject: 'Account Verification',
-            html: `<p>Click <a href="http://localhost:3000/auth/verify?token=${token}">here</a> to verify your account.</p>`,
+            html: ` <div style="text-align: center;">
+            <img src="https://i.pinimg.com/564x/94/8b/c8/948bc87f5d80848a7bcb56bde2b26c6a.jpg" alt="Company Logo" style="max-width: 150px;">
+            <h1>Welcome to <span style="display: inline-block; background-color: #fff; color: #ff0000; padding: 10px 20px; text-decoration: none;"> LIVRAISON ALLO MEDIA </span></h1>
+            <p>Thank you for choosing Your Company. To activate your account, please click the button below.</p>
+            <a href="http://localhost:3000/auth/verify?token=${token}" style="display: inline-block; background-color: #007bff; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Verify Account</a>
+            <p>If you did not create an account with Your Company, please ignore this email.</p>
+          </div>
+        `,
         };
         
         sendEmail(mailOptions);
