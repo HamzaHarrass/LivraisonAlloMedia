@@ -102,7 +102,7 @@ const LoginUser = async (req, res) => {
             httpOnly : true,
         })
             
-        res.status(200).json({ token });
+        res.status(200).json({ token, user });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
