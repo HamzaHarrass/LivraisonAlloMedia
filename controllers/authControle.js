@@ -131,7 +131,18 @@ const ForgotPassword = async (req, res) => {
             from: 'allo media <' + process.env.MAIL_USERNAME + '>',
             to: user.email,
             subject: 'Password Reset',
-            html: `<p>Click <a href="http://localhost:3000/auth/reset-password?token=${token}">here</a> to reset your password.</p>`,
+            html: `
+            <img src="https://i.pinimg.com/564x/94/8b/c8/948bc87f5d80848a7bcb56bde2b26c6a.jpg" alt="Company Logo" style="max-width: 150px;">
+            <p>Dear ${user.name},</p>
+            <p>We have received a request to reset your password for your Allo Media account.</p>
+            <p>If this request was not initiated by you, please ignore this email.</p>
+            <p>To reset your password, click on the following link:</p>
+            <p><a href="http://localhost:3000/auth/reset-password?token=${token}">Reset Password</a></p>
+            <p>This link will expire in 24 hours for security reasons, so please use it promptly.</p>
+            <p>If you have any questions or need further assistance, please don't hesitate to contact our support team.</p>
+            <p>Thank you for choosing Allo Media.</p>
+            <p>Best regards,</p>
+            <p>The Allo Media Team</p>`,
         };
 
         sendEmail(mailOptions);
