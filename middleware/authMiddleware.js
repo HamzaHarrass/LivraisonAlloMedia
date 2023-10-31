@@ -41,4 +41,25 @@ const ResetPassword = async (req, res, next) => {
   });
 };
 
-module.exports = ResetPassword;
+function verifyToken(req, res, next) {
+    const {token} = req.params; 
+  
+    if (!token) {
+      return res.status(403).json({ message: "Access denied. No token provided." });
+    }
+  
+    jwt.verify(token, "AZERTYUIO123456789", (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Unauthorized. Invalid token." });
+      }
+      
+     
+      req.user = decoded;
+      
+    });
+    console.log(req.user)
+    console.log('kjdfkjkjdfkdfjkdkjfkjdf')
+    next();
+  }
+
+module.exports = {ResetPassword , verifyToken};

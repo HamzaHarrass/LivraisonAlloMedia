@@ -1,6 +1,6 @@
 const express = require('express');
-const { register , LoginUser , ForgotPassword } = require('../controllers/authControle');
-const  ResetPassword  = require('../middleware/authMiddleware');
+const { register , LoginUser , ForgotPassword,sendVerificationEmail, getUserData } = require('../controllers/authControle');
+const  { ResetPassword , verifyToken } = require('../middleware/authMiddleware');
 const User = require('../models/Users');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -39,7 +39,61 @@ router.get('/verify',(req,res)=>{
 
 
 router.post('/forgot-password', ForgotPassword);
-router.get('/reset-password',);
+router.post('/reset-password', ResetPassword, async (req, res) => {
+    const {newPassword,newPassword_confirmation} = req.body; 
+        console.log(req.body);
+    if (!newPassword || !newPassword_confirmation) {
+        return res.status(400).json({ message: 'New password is missing' });
+    }
+    if (newPassword != newPassword_confirmation) {
+        return res.status(400).json({ message: "Passwords don't match" });
+    }
 
+    try {
+     
+        const user = await User.findOne({ email: req.email });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        user.password = hashedPassword;
+
+        user.resetLinkUsed = true;
+
+        await user.save();
+
+        res.status(200).json({ message: 'Password reset successful' });
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+router.get("/check-verification-status/:token", verifyToken, (req, res) => {
+    const user = getUserData(); 
+    console.log('fcukk')
+    console.log(req.user)
+  
+    if (user && user.isVerified) {
+      res.json({ isVerified: true });
+    } else {
+      res.json({ isVerified: false });
+    }
+  });
+
+  router.post("/send-verification-email", verifyToken, (req, res) => {
+    const userEmail = req.user.email; 
+    sendVerificationEmail(userEmail);
+  
+    res.status(200).json({ message: "Verification email sent successfully" });
+  });
+  router.post("/send-verification-email2", (req, res) => {
+    const userEmail = req.body.email; 
+    sendVerificationEmail(userEmail);
+  
+    res.status(200).json({ message: "Verification email sent successfully" });
+  });
 
 module.exports = router;

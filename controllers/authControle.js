@@ -73,6 +73,16 @@ const register = async (req, res) => {
 };
 
 
+const getUserData=async (id)=>{
+    try{
+        const user = await User.findOne({ id });
+        return user;
+    }catch(err){
+           console.log(err)
+    }
+}
+
+
 
 // function login
 
@@ -95,10 +105,10 @@ const LoginUser = async (req, res) => {
         const token = jwt.sign(
             { userId: user._id, email: user.email },
             'AZERTYUIO123456789', 
-            { expiresIn: 150 } 
+            { expiresIn: "3d" } 
         );
 
-        res.cookie("toKen", token,{
+        res.cookie("token", token,{
             httpOnly : true,
         })
             
@@ -126,7 +136,9 @@ const ForgotPassword = async (req, res) => {
         }
 
         const token = jwt.sign({ email: user.email }, 'AZERTYUIO123456789', { expiresIn: '1h' });
-
+        // console.log(token);
+        const url = `http://localhost:5173/reset-password?token=${token}`;
+        // console.log(url);
         const mailOptions = {
             from: 'allo media <' + process.env.MAIL_USERNAME + '>',
             to: user.email,
@@ -137,7 +149,7 @@ const ForgotPassword = async (req, res) => {
             <p>We have received a request to reset your password for your Allo Media account.</p>
             <p>If this request was not initiated by you, please ignore this email.</p>
             <p>To reset your password, click on the following link:</p>
-            <p><a href="http://localhost:3000/auth/reset-password?token=${token}">Reset Password</a></p>
+            <p><a href="${url}">Reset Password</a></p>
             <p>This link will expire in 24 hours for security reasons, so please use it promptly.</p>
             <p>If you have any questions or need further assistance, please don't hesitate to contact our support team.</p>
             <p>Thank you for choosing Allo Media.</p>
@@ -153,6 +165,33 @@ const ForgotPassword = async (req, res) => {
     }
 };
 
+ function sendVerificationEmail(email, verificationToken) {
+    const mailOptions = {
+      from: 'allo media <' + process.env.MAIL_USERNAME + '>',
+      to: email,
+      subject: "Account Verification",
+      html: `
+        <p>Dear valued Allo Media customer,</p>
+        <p>Thank you for choosing Allo Media for your media needs. To get started, we need to verify your account.</p>
+        <p>Please click the following link to verify your account:</p>
+        <p><a href="https://yourwebsite.com/verify-account?token=${verificationToken}">Verify Account</a></p>
+        <p>By verifying your account, you'll gain full access to our premium features and content.</p>
+        <p>If you didn't create an account with us, please ignore this message, and your account will not be activated.</p>
+        <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+        <p>Thank you for choosing Allo Media. We look forward to serving you.</p>
+        <p>Best regards,</p>
+        <p>The Allo Media Team</p>
+      `,
+    };
+  
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending verification email:", error);
+      } else {
+        console.log("Verification email sent:", info.response);
+      }
+    });
+  }
   
 
-module.exports = { register , LoginUser , ForgotPassword};
+module.exports = { register , LoginUser , ForgotPassword , sendVerificationEmail,getUserData};
