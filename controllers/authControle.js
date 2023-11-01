@@ -75,7 +75,8 @@ const register = async (req, res) => {
 
 const getUserData=async (id)=>{
     try{
-        const user = await User.findOne({ id });
+        const user = await User.findOne({ _id : id });
+        console.log("console controle :" + user);
         return user;
     }catch(err){
            console.log(err)
@@ -165,22 +166,31 @@ const ForgotPassword = async (req, res) => {
     }
 };
 
- function sendVerificationEmail(email, verificationToken) {
+ function sendVerificationEmail(email) {
+    const token = jwt.sign({email},
+        'AZERTYUIO123456789', 
+        { expiresIn: 600 } 
+    ); 
     const mailOptions = {
       from: 'allo media <' + process.env.MAIL_USERNAME + '>',
       to: email,
       subject: "Account Verification",
       html: `
-        <p>Dear valued Allo Media customer,</p>
-        <p>Thank you for choosing Allo Media for your media needs. To get started, we need to verify your account.</p>
-        <p>Please click the following link to verify your account:</p>
-        <p><a href="https://yourwebsite.com/verify-account?token=${verificationToken}">Verify Account</a></p>
-        <p>By verifying your account, you'll gain full access to our premium features and content.</p>
-        <p>If you didn't create an account with us, please ignore this message, and your account will not be activated.</p>
-        <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
-        <p>Thank you for choosing Allo Media. We look forward to serving you.</p>
-        <p>Best regards,</p>
-        <p>The Allo Media Team</p>
+      <html>
+        <body>
+          <img src="https://i.pinimg.com/564x/94/8b/c8/948bc87f5d80848a7bcb56bde2b26c6a.jpg" alt="Company Logo" style="max-width: 150px;">
+          <p>Dear valued Allo Media customer,</p>
+          <p>We appreciate your choice to trust Allo Media for your media needs. To start using our services, we kindly request your account verification.</p>
+          <p>Please click the following link to verify your account:</p>
+          <p><a href="http://localhost:5173/changestatus?token=${token}">Verify Your Account</a></p>
+          <p>By verifying your account, you'll unlock access to our premium features and exclusive content.</p>
+          <p>If you did not create an account with us, please disregard this message, and your account will remain inactive.</p>
+          <p>If you have any inquiries or require assistance, do not hesitate to contact our dedicated support team.</p>
+          <p>Thank you for choosing Allo Media. We eagerly anticipate the opportunity to serve you.</p>
+          <p>Best regards,</p>
+          <p>The Allo Media Team</p>
+        </body>
+      </html>
       `,
     };
   
@@ -192,6 +202,29 @@ const ForgotPassword = async (req, res) => {
       }
     });
   }
-  
 
-module.exports = { register , LoginUser , ForgotPassword , sendVerificationEmail,getUserData};
+
+  
+  const changeStatus = async (req, res) => {
+    try {
+        console.log(req.user);
+        const updatedUser = await User.findOneAndUpdate(
+            { email: req.email },
+            { status: true },
+            { new: true }
+        );
+
+        if (updatedUser) {
+            res.json(updatedUser);
+        } else {
+            res.status(404).json({ error: "User not found" });
+        }
+    } catch (error) {
+        console.error("Error updating user status:", error);
+        res.status(500).json({ error: "Error updating user status" });
+    }
+}
+
+
+
+module.exports = { register , LoginUser , ForgotPassword , sendVerificationEmail,getUserData,changeStatus};

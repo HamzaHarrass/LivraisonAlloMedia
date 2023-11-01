@@ -43,23 +43,22 @@ const ResetPassword = async (req, res, next) => {
 
 function verifyToken(req, res, next) {
     const {token} = req.params; 
-  
+    
     if (!token) {
       return res.status(403).json({ message: "Access denied. No token provided." });
     }
   
-    jwt.verify(token, "AZERTYUIO123456789", (err, decoded) => {
-      if (err) {
+    let  tokenVerified = jwt.verify(token, "AZERTYUIO123456789");
+      if (!tokenVerified) {
         return res.status(401).json({ message: "Unauthorized. Invalid token." });
       }
       
      
-      req.user = decoded;
-      
-    });
-    console.log(req.user)
-    console.log('kjdfkjkjdfkdfjkdkjfkjdf')
-    next();
+      req.tokenVerified = tokenVerified.userId;
+      req.email = tokenVerified.email
+
+    console.log("console 1 middlleware " + req.tokenVerified)
+    return next();
   }
 
 module.exports = {ResetPassword , verifyToken};

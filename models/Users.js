@@ -19,6 +19,10 @@ const userSchema = new Schema({
         type : Schema.Types.ObjectId,
         ref : 'Roles'
     },
+    status : {
+        type : Boolean,
+        default : false
+    }
 })
 
 const User = mongoose.model('User',userSchema);

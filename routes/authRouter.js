@@ -1,5 +1,5 @@
 const express = require('express');
-const { register , LoginUser , ForgotPassword,sendVerificationEmail, getUserData } = require('../controllers/authControle');
+const { register , LoginUser , ForgotPassword,sendVerificationEmail,getUserData,changeStatus} = require('../controllers/authControle');
 const  { ResetPassword , verifyToken } = require('../middleware/authMiddleware');
 const User = require('../models/Users');
 const bcrypt = require('bcryptjs');
@@ -71,12 +71,12 @@ router.post('/reset-password', ResetPassword, async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
-router.get("/check-verification-status/:token", verifyToken, (req, res) => {
-    const user = getUserData(); 
-    console.log('fcukk')
-    console.log(req.user)
+router.get("/check-verification-status/:token", verifyToken, async (req, res) => {
+    const user =  await getUserData(req.tokenVerified);
+    
+    console.log("console  router " + user.status);
   
-    if (user && user.isVerified) {
+    if ( user.status == true) {
       res.json({ isVerified: true });
     } else {
       res.json({ isVerified: false });
@@ -90,10 +90,13 @@ router.get("/check-verification-status/:token", verifyToken, (req, res) => {
     res.status(200).json({ message: "Verification email sent successfully" });
   });
   router.post("/send-verification-email2", (req, res) => {
-    const userEmail = req.body.email; 
+    const userEmail = req.body.email;
+    
     sendVerificationEmail(userEmail);
-  
+    
     res.status(200).json({ message: "Verification email sent successfully" });
   });
+
+  router.post('/changestatus/:token',verifyToken,changeStatus);
 
 module.exports = router;
