@@ -1,4 +1,4 @@
-$${\color{white}ALLO \color{red}MEDIA}$$
+$$${\color{white}Allo \color{red}Media}$$$
 # Cloner et Exécuter le Dépôt AlloMedia
 
 Dans ce README, nous vous guiderons à travers le processus de clonage du dépôt AlloMedia, qui est une application de services de livraison. Nous vous montrerons également comment le configurer et exécuter le serveur et la base de données. Commençons !
