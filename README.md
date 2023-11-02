@@ -39,6 +39,6 @@ Cela lancera l'application AlloMedia Express, et vous devriez voir une sortie in
 Votre base de données peut également nécessiter un démarrage ou une configuration séparée, en fonction de la configuration du projet. Veuillez consulter la documentation ou le README du projet pour des instructions spécifiques sur la configuration et le démarrage de la base de données.
 
 C'est tout ! Vous avez cloné avec succès le dépôt AlloMedia Express, installé les dépendances nécessaires et démarré le serveur. Vous pouvez maintenant accéder et interagir avec l'application en ouvrant un navigateur web et en accédant à l'adresse appropriée (par exemple, http://localhost:3000). Profitez de l'application de livraison AlloMedia !
-```
-Assurez-vous de personnaliser les liens vers les installations de Git et Node.js, ainsi que toute autre information spécifique à votre projet, avant d'ajouter ce fichier README.md à la racine de votre référentiel GitHub.
+```sql
+You can copy and paste this code into your README.md file on GitHub, and then customize it with your specific project details and any additional sections you'd like to include.
 ```
