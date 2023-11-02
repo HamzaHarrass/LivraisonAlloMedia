@@ -7,7 +7,7 @@ Dans ce README, nous vous guiderons à travers le processus de clonage du dépô
 Avant de commencer, assurez-vous d'avoir installé les éléments suivants sur votre système :
 
 - [Git : Installez Git](lien_vers_l_installation_de_Git)
-- [Node.js [>16] et npm : Installez Node.js et npm](lien_vers_l_installation_de_Node.js)
+- [Node.js [18] et npm : Installez Node.js et npm](lien_vers_l_installation_de_Node.js)
 
 ## Cloner le Dépôt
 
