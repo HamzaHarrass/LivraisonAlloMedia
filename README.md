@@ -39,6 +39,23 @@ Cela lancera l'application AlloMedia Express, et vous devriez voir une sortie in
 Votre base de données peut également nécessiter un démarrage ou une configuration séparée, en fonction de la configuration du projet. Veuillez consulter la documentation ou le README du projet pour des instructions spécifiques sur la configuration et le démarrage de la base de données.
 
 C'est tout ! Vous avez cloné avec succès le dépôt AlloMedia Express, installé les dépendances nécessaires et démarré le serveur. Vous pouvez maintenant accéder et interagir avec l'application en ouvrant un navigateur web et en accédant à l'adresse appropriée (par exemple, http://localhost:3000). Profitez de l'application de livraison AlloMedia !
+
+### Build Docker Image
+***
+To build the Docker image, follow these steps:
+
+```bash
+docker build -t front-image .
+```
+## Run Docker Container
+***
+To run the Docker container, use the following command:
+
+```bash
+docker run -p 5173:5173 --name front-container front-image
+```
+### License
+***
 ```sql
 You can copy and paste this code into your README.md file on GitHub, and then customize it with your specific project details and any additional sections you'd like to include.
 ```
