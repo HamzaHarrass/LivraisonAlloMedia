@@ -1,5 +1,6 @@
 const express = require('express');
 const { register , LoginUser , ForgotPassword,sendVerificationEmail,getUserData,changeStatus} = require('../controllers/authControle');
+const {GetUser} = require('../controllers/test')
 const  { ResetPassword , verifyToken } = require('../middleware/authMiddleware');
 const User = require('../models/Users');
 const bcrypt = require('bcryptjs');
@@ -98,5 +99,10 @@ router.get("/check-verification-status/:token", verifyToken, async (req, res) =>
   });
 
   router.post('/changestatus/:token',verifyToken,changeStatus);
+
+
+//   test
+
+ router.get('/getuser',GetUser);
 
 module.exports = router;

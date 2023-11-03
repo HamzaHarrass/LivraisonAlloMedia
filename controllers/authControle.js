@@ -1,7 +1,6 @@
 const User = require('../models/Users'); 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
 const { transporter, sendEmail } = require('../config/nodeMailerConfig');
 const Role = require('../models/Roles');
 
@@ -11,11 +10,11 @@ const register = async (req, res) => {
     try {
       
         let { username, email, password , role } = req.body;
-
+         
         if (!username || !password || !email || !role) {
             return res.status(400).send("Veuillez remplir tous les champs.");
         }
-       
+
         const existingUser = await User.findOne({ email });
         
         if (existingUser) {
@@ -26,7 +25,8 @@ const register = async (req, res) => {
             console.log(role);
             return res.status(403).json({ message: 'invalid role' });
         }
-        role = Role.findOne({name:role})
+        role = await Role.findOne({name:role})
+        console.log(role);
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -37,6 +37,7 @@ const register = async (req, res) => {
             password: hashedPassword,
             role : role._id
         });
+        console.log(newUser);
 
         const token = jwt.sign({email: newUser.email },
                     'AZERTYUIO123456789', 
@@ -58,7 +59,7 @@ const register = async (req, res) => {
             <img src="https://i.pinimg.com/564x/94/8b/c8/948bc87f5d80848a7bcb56bde2b26c6a.jpg" alt="Company Logo" style="max-width: 150px;">
             <h1>Welcome to <span style="display: inline-block; background-color: #fff; color: #ff0000; padding: 10px 20px; text-decoration: none;"> LIVRAISON ALLO MEDIA </span></h1>
             <p>Thank you for choosing Your Company. To activate your account, please click the button below.</p>
-            <a href="http://localhost:3000/auth/verify?token=${token}" style="display: inline-block; background-color: #007bff; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Verify Account</a>
+            <a href="http://localhost:5173/changestatus?token=${token}" style="display: inline-block; background-color: #007bff; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Verify Account</a>
             <p>If you did not create an account with Your Company, please ignore this email.</p>
           </div>
         `,
